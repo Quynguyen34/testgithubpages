@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Avatar Fetcher</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    input[type="email"] {
+      padding: 10px;
+      width: 300px;
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+    img {
+      margin-top: 20px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fetch Avatar by Email</h1>
+  <form id="avatarForm">
+    <input type="email" id="email" placeholder="Enter email" required />
+    <button type="submit">Get Avatar</button>
+  </form>
+  <div id="avatarResult"></div>
+
+  <script>
+    document.getElementById('avatarForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      if (!email) return;
+
+      // Hash email using MD5
+      const hash = await crypto.subtle.digest('MD5', new TextEncoder().encode(email));
+      const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Display avatar
+      const avatarUrl = `https://www.gravatar.com/avatar/${hashHex}?d=identicon&s=200`;
+      document.getElementById('avatarResult').innerHTML = `
+        <h2>Avatar:</h2>
+        <img src="${avatarUrl}" alt="Avatar for ${email}" />
+      `;
+    });
+  </script>
+</body>
+</html>
