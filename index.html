@@ -3,54 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email Avatar Fetcher</title>
+  <title>Gmail Avatar Finder</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 50px;
+      margin-top: 50px;
+      background-color: #f7f7f7;
     }
-    input[type="email"] {
+    input {
       padding: 10px;
       width: 300px;
-      margin: 10px 0;
+      margin-right: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
     button {
       padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
     }
-    img {
+    button:hover {
+      background-color: #45a049;
+    }
+    .avatar {
       margin-top: 20px;
+    }
+    img {
       border-radius: 50%;
-      border: 2px solid #ddd;
+      width: 150px;
+      height: 150px;
+    }
+    .instructions {
+      margin-top: 30px;
+      font-size: 14px;
+      color: gray;
     }
   </style>
 </head>
 <body>
-  <h1>Fetch Avatar by Email</h1>
-  <form id="avatarForm">
-    <input type="email" id="email" placeholder="Enter email" required />
-    <button type="submit">Get Avatar</button>
-  </form>
-  <div id="avatarResult"></div>
+  <h1>Gmail Avatar Finder</h1>
+  <p>Nhập địa chỉ email Gmail để hiển thị ảnh đại diện:</p>
+  <input type="email" id="email" placeholder="Nhập địa chỉ Gmail" />
+  <button onclick="getAvatar()">Lấy Avatar</button>
+  <div class="avatar" id="avatar"></div>
+  <div class="instructions">
+    <p><strong>Lưu ý:</strong> Ảnh đại diện sẽ chỉ hiển thị nếu người dùng đã thiết lập ảnh đại diện công khai.</p>
+  </div>
 
   <script>
-    document.getElementById('avatarForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      if (!email) return;
+    function getAvatar() {
+      const email = document.getElementById("email").value.trim().toLowerCase();
+      if (!email.endsWith("@gmail.com")) {
+        alert("Vui lòng nhập địa chỉ email Gmail hợp lệ!");
+        return;
+      }
 
-      // Hash email using MD5
-      const hash = await crypto.subtle.digest('MD5', new TextEncoder().encode(email));
-      const hashHex = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+      // Tạo URL cho ảnh đại diện
+      const avatarUrl = `https://www.google.com/s2/photos/public/profile/${email}?sz=150`;
 
-      // Display avatar
-      const avatarUrl = `https://www.gravatar.com/avatar/${hashHex}?d=identicon&s=200`;
-      document.getElementById('avatarResult').innerHTML = `
-        <h2>Avatar:</h2>
-        <img src="${avatarUrl}" alt="Avatar for ${email}" />
-      `;
-    });
+      const avatarDiv = document.getElementById("avatar");
+      avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="Avatar" onerror="this.onerror=null; this.src='https://via.placeholder.com/150';">`;
+    }
   </script>
 </body>
 </html>
